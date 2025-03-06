@@ -1,8 +1,15 @@
 from main import*
 
-def tg_space_bot():
-    bot = telegram.Bot(API_TElEGRAM)
-    bot.send_message(text='Hi!', chat_id='@space_test_devman')
+bot = telegram.Bot(API_TElEGRAM)
+
+def bot_send_message():
+    path_to_images = Path(r'C:\Users\PC\Desktop\tg_space\images')
+    images = os.listdir(path_to_images)
+    img_path = random.choice(images)
+    image_send = os.path.join(path_to_images, img_path)
+    print(image_send)
+
+    bot.send_photo(chat_id='@space_test_devman', photo=open(image_send, 'rb'))
 
 if __name__ == '__main__':
-    tg_space_bot()
+    bot_send_message()

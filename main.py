@@ -4,15 +4,18 @@ import datetime
 import os.path
 import telegram
 import imghdr
+import random
 from urllib.parse import urlparse
 from dotenv import load_dotenv
 from datetime import datetime
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
+from pathlib import Path
 
 load_dotenv()
 API_NASA = os.getenv('API_NASA')
 API_TElEGRAM = os.getenv('API_TElEGRAM')
+
 
 def file_extension(image_url):
     parce = urlparse(image_url)
