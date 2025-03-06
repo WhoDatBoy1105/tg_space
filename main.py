@@ -5,6 +5,7 @@ import os.path
 import telegram
 import imghdr
 import random
+import threading
 from urllib.parse import urlparse
 from dotenv import load_dotenv
 from datetime import datetime
