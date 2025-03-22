@@ -13,13 +13,10 @@ from datetime import datetime
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
 from pathlib import Path
+from telegram_bot_space import run_bot
 
-load_dotenv()
-NASA_API_KEY = os.getenv('NASA_API_KEY')
-TELEGRAM_API_KEY = os.getenv('TELEGRAM_API_KEY')
-TG_CHAT_ID = os.getenv('TG_CHAT_ID')
 
-def file_extension(image_url):
+def get_file_extension(image_url):
     parce = urlparse(image_url)
     print((os.path.splitext(parce.path))[-1])
 
@@ -33,6 +30,9 @@ def save_image(filename, image_url):
 
 
 def main():
+    load_dotenv()
+    print("Бот запущен")
+    run_bot()
     pass
 
 

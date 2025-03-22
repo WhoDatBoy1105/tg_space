@@ -2,7 +2,6 @@ from main import save_image
 from main import requests
 from pathlib import Path
 from main import argparse
-from urllib.parse import urlencode
 
 
 def parse_and_validate_args():
@@ -53,20 +52,11 @@ def save_images(directory_path, image_urls):
 
 
 def fetch_and_save_images(args):
-    try:
-        url = get_spacex_url(args)
-        image_urls = fetch_spacex_data(url)
-        directory_path = prepare_directory()
-        save_images(directory_path, image_urls)
-
-        print("Все изображения успешно сохранены!")
-
-    except requests.exceptions.RequestException as req_err:
-        print(f"Ошибка при запросе к API: {req_err}")
-    except ValueError as val_err:
-        print(f"Ошибка: {val_err}")
-    except Exception as err:
-        print(f"Произошла непредвиденная ошибка: {err}")
+    url = get_spacex_url(args)
+    image_urls = fetch_spacex_data(url)
+    directory_path = prepare_directory()
+    save_images(directory_path, image_urls)
+    print("Все изображения успешно сохранены!")
 
 
 def main():

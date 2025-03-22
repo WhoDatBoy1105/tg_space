@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from main import requests
 from pathlib import Path
 from main import argparse
-from urllib.parse import urlencode
 
 
 def parse_arguments():
@@ -46,21 +45,11 @@ def save_nasa_image(directory_path, date, image_url):
 def fetch_and_save_apod_image(api_key, date):
     try:
         data = get_nasa_apod_data(api_key, date)
-        media_type = data.get('media_type')
-        if media_type == 'image':
-            image_url = data.get('url')
-        elif media_type == 'video':
-            print("APOD за выбранную дату является видео. Сохранение изображений невозможно.")
-            return
-        else:
-            print(f"Неизвестный тип медиа: {media_type}")
-            return
+        image_url = data.get('url')
         directory_path = prepare_directory()
         save_nasa_image(directory_path, date or "today", image_url)
     except requests.exceptions.HTTPError as http_err:
         print(f"HTTP error occurred: {http_err}")
-    except Exception as err:
-        print(f"An error occurred: {err}")
 
 
 def main():
