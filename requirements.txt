@@ -1,7 +1,6 @@
 requests == 2.32.3
 dotenv == 0.9.9
 python-telegram-bot == 13.2
-datetime == 5.5
 
 
 

@@ -1,9 +1,9 @@
-from main import save_image
-from main import os
+from posting_images_in_telegram import save_image
+from posting_images_in_telegram import os
 from dotenv import load_dotenv
-from main import requests
+from posting_images_in_telegram import requests
 from pathlib import Path
-from main import argparse
+import argparse
 
 
 def parse_arguments():
@@ -12,14 +12,6 @@ def parse_arguments():
     )
     parser.add_argument('--date_apod', help='Введите дату нужных фотографий APOD в формате год-месяц-день', type=str)
     return parser.parse_args()
-
-
-def handle_date_argument(args):
-    if args.date_apod is None:
-        print('Вы сохраняете фото APOD на сегодняшний день')
-        return "today"
-    print(f'Вы сохраняете фото APOD за {args.date_apod}')
-    return args.date_apod
 
 
 def get_nasa_apod_data(api_key, date):
@@ -43,20 +35,16 @@ def save_nasa_image(directory_path, date, image_url):
 
 
 def fetch_and_save_apod_image(api_key, date):
-    try:
-        data = get_nasa_apod_data(api_key, date)
-        image_url = data.get('url')
-        directory_path = prepare_directory()
-        save_nasa_image(directory_path, date or "today", image_url)
-    except requests.exceptions.HTTPError as http_err:
-        print(f"HTTP error occurred: {http_err}")
+    data = get_nasa_apod_data(api_key, date)
+    image_url = data.get('url')
+    directory_path = prepare_directory()
+    save_nasa_image(directory_path, date or "today", image_url)
 
 
 def main():
     args = parse_arguments()
-    date = handle_date_argument(args)
     load_dotenv()
-    api_key = os.getenv('NASA_API_KEY')
+    api_key = os.environ['NASA_API_KEY']
     if not api_key:
         raise ValueError("API ключ NASA не найден. Убедитесь, что переменная API_NASA установлена в .env файле.")
     fetch_and_save_apod_image(api_key, args.date_apod)

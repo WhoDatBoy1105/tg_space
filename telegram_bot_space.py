@@ -7,7 +7,7 @@ from telegram.ext import Updater, CommandHandler, CallbackContext
 
 
 def prepare_directory(path=None):
-    directory_path = Path(__file__).parent / 'images' if path is None else Path(path)
+    directory_path = Path(__file__).parent / os.getenv('DIRECTORY_PATH') if path is None else Path(path)
     directory_path.mkdir(parents=True, exist_ok=True)
     return directory_path
 
@@ -27,7 +27,6 @@ def send_random_image(bot, chat_id, path_to_images):
     print(f"Изображение успешно отправлено: {image_path}")
 
 
-
 def start_bot(update, context):
     update.message.reply_text("Привет! Я бот, который отправляет случайные изображения из космоса!")
 
@@ -38,13 +37,13 @@ def send_image_periodically(bot, chat_id, path_to_images):
 
 
 def run_bot():
-    TELEGRAM_API_KEY = os.getenv('TELEGRAM_API_KEY')
-    TG_CHAT_ID = os.getenv('TG_CHAT_ID')
+    telegram_api_key = os.getenv('TELEGRAM_API_KEY')
+    tg_chat_id = os.getenv('TG_CHAT_ID')
     path_to_images = prepare_directory()
-    bot = Bot(token=TELEGRAM_API_KEY)
-    updater = Updater(token=TELEGRAM_API_KEY, use_context=True)
+    bot = Bot(token=telegram_api_key)
+    updater = Updater(token=telegram_api_key, use_context=True)
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("start", start_bot))
-    send_image_periodically(bot, TG_CHAT_ID, path_to_images)
+    send_image_periodically(bot, tg_chat_id, path_to_images)
     updater.start_polling()
     updater.idle()

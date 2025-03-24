@@ -1,10 +1,10 @@
-from main import save_image
+from posting_images_in_telegram import save_image
 from dotenv import load_dotenv
-from main import os
-from main import datetime
-from main import requests
+from posting_images_in_telegram import os
+from posting_images_in_telegram import requests
 from pathlib import Path
-from main import argparse
+import argparse
+import datetime
 
 def parse_and_validate_args():
     parser = argparse.ArgumentParser(
@@ -21,7 +21,7 @@ def parse_and_validate_args():
 
 
 def load_nasa_api_key():
-    api_key = os.getenv('NASA_API_KEY')
+    api_key = os.environ['NASA_API_KEY']
     if not api_key:
         raise ValueError("NASA_API_KEY не найден в переменных окружения")
     return api_key
@@ -44,7 +44,7 @@ def get_nasa_epic_url(api_key):
 def create_image_by_date(data):
     image_names = [item['image'] for item in data]
     image_date = data[0]['date']
-    date_obj = datetime.strptime(image_date, "%Y-%m-%d %H:%M:%S")
+    date_obj = datetime.datetime.strptime(image_date, "%Y-%m-%d %H:%M:%S")
     payload = {
         'year': date_obj.year,
         'month': f"{date_obj.month:02d}",
@@ -55,6 +55,7 @@ def create_image_by_date(data):
 
 def save_images(directory_path, payload, image_names, api_key, args):
     request_params = {"api_key": api_key}
+    max_images = args.max_images
     for index, image_name in enumerate(image_names, start=1):
         link_image = (
             f'https://api.nasa.gov/EPIC/archive/natural/'
@@ -63,10 +64,10 @@ def save_images(directory_path, payload, image_names, api_key, args):
         response = requests.get(link_image, params=request_params)
         response.raise_for_status()
         filename = directory_path / f'EPIC_{index}.png'
-        if args.max_images is None:
+        if max_images is None:
             save_image(filename, response.url)
         else:
-            args.max_images >= index
+            max_images >= index
             save_image(filename, response.url)
             break
 

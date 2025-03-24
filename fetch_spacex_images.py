@@ -1,17 +1,21 @@
-from main import save_image
-from main import requests
+from posting_images_in_telegram import save_image
+from posting_images_in_telegram import requests
 from pathlib import Path
-from main import argparse
+import argparse
 
 
 def parse_and_validate_args():
     parser = argparse.ArgumentParser(
         description='Программа сохраняет картинки по id запуска SpaceX, без указания скачивает с последнего запуска'
     )
-    parser.add_argument('--id_spacex', help='ID запуска SpaceX', type=str)
+    parser.add_argument(
+        '--id_spacex',
+        default= 'latest',
+        help='ID запуска SpaceX',
+        type=str)
     args = parser.parse_args()
 
-    if args.id_spacex is None:
+    if args.id_spacex == 'latest':
         print('Вы сохраняете фото последнего запуска SpaceX, если они есть')
     else:
         print(f'Вы сохраняете фото последнего запуска SpaceX, по ID {args.id_spacex}')
@@ -21,9 +25,8 @@ def parse_and_validate_args():
 
 def get_spacex_url(args):
     base_url = 'https://api.spacexdata.com/v5/launches'
-    if args.id_spacex is None:
-        return f'{base_url}/latest'
     return f'{base_url}/{args.id_spacex}'
+
 
 
 def fetch_spacex_data(url):
