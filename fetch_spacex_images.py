@@ -23,9 +23,9 @@ def parse_and_validate_args():
     return args
 
 
-def get_spacex_url(args):
+def get_spacex_url(id_spacex):
     base_url = 'https://api.spacexdata.com/v5/launches'
-    return f'{base_url}/{args.id_spacex}'
+    return f'{base_url}/{id_spacex}'
 
 
 
@@ -54,8 +54,8 @@ def save_images(directory_path, image_urls):
         save_image(filename, image_url)
 
 
-def fetch_and_save_images(args):
-    url = get_spacex_url(args)
+def fetch_and_save_images(id_spacex):
+    url = get_spacex_url(id_spacex)
     image_urls = fetch_spacex_data(url)
     directory_path = prepare_directory()
     save_images(directory_path, image_urls)
@@ -64,7 +64,7 @@ def fetch_and_save_images(args):
 
 def main():
     args = parse_and_validate_args()
-    fetch_and_save_images(args)
+    fetch_and_save_images(args.id_spacex)
 
 
 if __name__ == '__main__':

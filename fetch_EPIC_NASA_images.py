@@ -53,9 +53,8 @@ def create_image_by_date(data):
     return image_names, payload
 
 
-def save_images(directory_path, payload, image_names, api_key, args):
+def save_images(directory_path, payload, image_names, api_key, max_images):
     request_params = {"api_key": api_key}
-    max_images = args.max_images
     for index, image_name in enumerate(image_names, start=1):
         link_image = (
             f'https://api.nasa.gov/EPIC/archive/natural/'
@@ -77,7 +76,7 @@ def fetch_and_save_epic_images(api_key):
     data = get_nasa_epic_url(api_key)
     image_names, payload = create_image_by_date(data)
     directory_path = prepare_directory()
-    save_images(directory_path, payload, image_names, api_key, args)
+    save_images(directory_path, payload, image_names, api_key, args.max_images)
     print("Все изображения успешно сохранены!")
 
 
