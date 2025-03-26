@@ -6,8 +6,18 @@ from telegram import Bot
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
 
-def prepare_directory(path=None):
-    directory_path = Path(__file__).parent / os.getenv('DIRECTORY_PATH') if path is None else Path(path)
+
+def load_environment_variables():
+    telegram_api_key = os.getenv('TELEGRAM_API_KEY')
+    tg_chat_id = os.getenv('TG_CHAT_ID')
+    directory_path_images = os.getenv('DIRECTORY_PATH')
+    if not all ([telegram_api_key, tg_chat_id, directory_path_images]):
+        raise ValueError("Не найдены переменные окружения")
+    return telegram_api_key, tg_chat_id, directory_path_images
+
+
+def prepare_directory(directory_path_images, path=None):
+    directory_path = Path(__file__).parent / directory_path_images if path is None else Path(path)
     directory_path.mkdir(parents=True, exist_ok=True)
     return directory_path
 
@@ -37,9 +47,8 @@ def send_image_periodically(bot, chat_id, path_to_images):
 
 
 def run_bot():
-    telegram_api_key = os.getenv('TELEGRAM_API_KEY')
-    tg_chat_id = os.getenv('TG_CHAT_ID')
-    path_to_images = prepare_directory()
+    telegram_api_key, tg_chat_id, directory_path_images = load_environment_variables()
+    path_to_images = prepare_directory(directory_path_images)
     bot = Bot(token=telegram_api_key)
     updater = Updater(token=telegram_api_key, use_context=True)
     dispatcher = updater.dispatcher
