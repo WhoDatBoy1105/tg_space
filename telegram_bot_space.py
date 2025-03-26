@@ -8,8 +8,8 @@ from telegram.ext import Updater, CommandHandler, CallbackContext
 
 
 def load_environment_variables():
-    telegram_api_key = os.getenv('TELEGRAM_API_KEY')
-    tg_chat_id = os.getenv('TG_CHAT_ID')
+    telegram_api_key = os.environ['TELEGRAM_API_KEY']
+    tg_chat_id = os.environ['TG_CHAT_ID']
     directory_path_images = os.getenv('DIRECTORY_PATH')
     if not all ([telegram_api_key, tg_chat_id, directory_path_images]):
         raise ValueError("Не найдены переменные окружения")
