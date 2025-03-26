@@ -4,9 +4,6 @@ from urllib.parse import urlparse
 from dotenv import load_dotenv
 from telegram_bot_space import run_bot
 
-def get_file_extension(image_url):
-    parce = urlparse(image_url)
-
 
 def save_image(filename, image_url):
     response = requests.get(image_url)
