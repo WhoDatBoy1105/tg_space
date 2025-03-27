@@ -3,6 +3,7 @@ from posting_images_in_telegram import os
 from dotenv import load_dotenv
 from posting_images_in_telegram import requests
 from pathlib import Path
+from telegram_bot_space import prepare_directory
 import argparse
 
 
@@ -21,13 +22,6 @@ def get_nasa_apod_data(api_key, date):
     response.raise_for_status()
     return response.json()
 
-
-def prepare_directory(path=None):
-    directory_path = Path(__file__).parent / 'images' if path is None else Path(path)
-    directory_path.mkdir(parents=True, exist_ok=True)
-    return directory_path
-
-
 def save_nasa_image(directory_path, date, image_url):
     filename = directory_path / f'nasa_apod_{date}.jpg'
     save_image(filename, image_url)
@@ -37,7 +31,7 @@ def save_nasa_image(directory_path, date, image_url):
 def fetch_and_save_apod_image(api_key, date):
     data = get_nasa_apod_data(api_key, date)
     image_url = data.get('url')
-    directory_path = prepare_directory()
+    directory_path = prepare_directory('images')
     save_nasa_image(directory_path, date or "today", image_url)
 
 

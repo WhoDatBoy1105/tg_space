@@ -5,6 +5,7 @@ from posting_images_in_telegram import requests
 from pathlib import Path
 import argparse
 import datetime
+from telegram_bot_space import prepare_directory
 
 def parse_and_validate_args():
     parser = argparse.ArgumentParser(
@@ -25,12 +26,6 @@ def load_nasa_api_key():
     if not api_key:
         raise ValueError("NASA_API_KEY не найден в переменных окружения")
     return api_key
-
-
-def prepare_directory(path=None):
-    directory_path = Path(__file__).parent / 'images' if path is None else Path(path)
-    directory_path.mkdir(parents=True, exist_ok=True)
-    return directory_path
 
 
 def get_nasa_epic_url(api_key):
@@ -75,7 +70,7 @@ def fetch_and_save_epic_images(api_key):
     args = parse_and_validate_args()
     data = get_nasa_epic_url(api_key)
     image_names, payload = create_image_by_date(data)
-    directory_path = prepare_directory()
+    directory_path = prepare_directory('images')
     save_images(directory_path, payload, image_names, api_key, args.max_images)
     print("Все изображения успешно сохранены!")
 

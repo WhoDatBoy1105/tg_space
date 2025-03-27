@@ -2,7 +2,7 @@ from posting_images_in_telegram import save_image
 from posting_images_in_telegram import requests
 from pathlib import Path
 import argparse
-
+from telegram_bot_space import prepare_directory
 
 def parse_and_validate_args():
     parser = argparse.ArgumentParser(
@@ -39,15 +39,6 @@ def fetch_spacex_data(url):
     return image_urls
 
 
-def prepare_directory(path=None):
-    if path is None:
-        directory_path = Path(__file__).parent / 'images'
-    else:
-        directory_path = Path(path)
-    directory_path.mkdir(parents=True, exist_ok=True)
-    return directory_path
-
-
 def save_images(directory_path, image_urls):
     for image_number, image_url in enumerate(image_urls):
         filename = directory_path / f'spacex_{image_number}.jpg'
@@ -57,7 +48,7 @@ def save_images(directory_path, image_urls):
 def fetch_and_save_images(id_spacex):
     url = get_spacex_url(id_spacex)
     image_urls = fetch_spacex_data(url)
-    directory_path = prepare_directory()
+    directory_path = prepare_directory('images')
     save_images(directory_path, image_urls)
     print("Все изображения успешно сохранены!")
 
