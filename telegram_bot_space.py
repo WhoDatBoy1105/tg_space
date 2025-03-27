@@ -3,7 +3,7 @@ import random
 import threading
 from pathlib import Path
 from telegram import Bot
-from telegram.ext import Updater, CommandHandler, CallbackContext
+from telegram.ext import Updater, CommandHandler
 
 
 

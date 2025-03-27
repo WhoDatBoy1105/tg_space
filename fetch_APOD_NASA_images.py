@@ -2,7 +2,6 @@ from posting_images_in_telegram import save_image
 from posting_images_in_telegram import os
 from dotenv import load_dotenv
 from posting_images_in_telegram import requests
-from pathlib import Path
 from telegram_bot_space import prepare_directory
 import argparse
 

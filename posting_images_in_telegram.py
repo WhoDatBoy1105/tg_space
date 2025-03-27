@@ -1,6 +1,4 @@
 import requests
-import os.path
-from urllib.parse import urlparse
 from dotenv import load_dotenv
 from telegram_bot_space import run_bot
 
