@@ -9,23 +9,23 @@ def parse_and_validate_args():
         description='Программа сохраняет картинки по id запуска SpaceX, без указания скачивает с последнего запуска'
     )
     parser.add_argument(
-        '--id_spacex',
+        '--spacex_id',
         default= 'latest',
         help='ID запуска SpaceX',
         type=str)
     args = parser.parse_args()
 
-    if args.id_spacex == 'latest':
+    if args.spacex_id == 'latest':
         print('Вы сохраняете фото последнего запуска SpaceX, если они есть')
     else:
-        print(f'Вы сохраняете фото последнего запуска SpaceX, по ID {args.id_spacex}')
+        print(f'Вы сохраняете фото последнего запуска SpaceX, по ID {args.spacex_id}')
 
     return args
 
 
-def get_spacex_url(id_spacex):
+def get_spacex_url(spacex_id):
     base_url = 'https://api.spacexdata.com/v5/launches'
-    return f'{base_url}/{id_spacex}'
+    return f'{base_url}/{spacex_id}'
 
 
 
@@ -45,8 +45,8 @@ def save_images(directory_path, image_urls):
         save_image(filename, image_url)
 
 
-def fetch_and_save_images(id_spacex):
-    url = get_spacex_url(id_spacex)
+def fetch_and_save_images(spacex_id):
+    url = get_spacex_url(spacex_id)
     image_urls = fetch_spacex_data(url)
     directory_path = prepare_directory('images')
     save_images(directory_path, image_urls)
@@ -55,7 +55,7 @@ def fetch_and_save_images(id_spacex):
 
 def main():
     args = parse_and_validate_args()
-    fetch_and_save_images(args.id_spacex)
+    fetch_and_save_images(args.spacex_id)
 
 
 if __name__ == '__main__':
