@@ -21,13 +21,6 @@ def parse_and_validate_args():
     return args
 
 
-def load_nasa_api_key():
-    api_key = os.environ['NASA_API_KEY']
-    if not api_key:
-        raise ValueError("NASA_API_KEY не найден в переменных окружения")
-    return api_key
-
-
 def get_nasa_epic_url(api_key):
     base_url = 'https://epic.gsfc.nasa.gov/api/natural'
     params = {'api_key': api_key}
@@ -77,7 +70,9 @@ def fetch_and_save_epic_images(api_key):
 
 def main():
     load_dotenv()
-    api_key = load_nasa_api_key()
+    api_key = os.environ['NASA_API_KEY']
+    if not api_key:
+        raise ValueError("API ключ NASA не найден. Убедитесь, что переменная API_NASA установлена в .env файле.")
     fetch_and_save_epic_images(api_key)
 
 
