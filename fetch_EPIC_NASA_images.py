@@ -4,7 +4,7 @@ from posting_images_in_telegram import requests
 import os
 import argparse
 import datetime
-from telegram_bot_space import prepare_directory
+from pathlib import Path
 
 def parse_and_validate_args():
     parser = argparse.ArgumentParser(
@@ -55,10 +55,9 @@ def save_images(directory_path, payload, image_names, api_key, max_images):
             break
 
 
-def fetch_and_save_epic_images(api_key, args):
+def fetch_and_save_epic_images(api_key, args, directory_path):
     data = get_nasa_epic_url(api_key)
     image_names, payload = prepare_image_payload (data)
-    directory_path = prepare_directory('images')
     save_images(directory_path, payload, image_names, api_key, args.max_images)
     print("Все изображения успешно сохранены!")
 
@@ -66,10 +65,12 @@ def fetch_and_save_epic_images(api_key, args):
 def main():
     args = parse_and_validate_args()
     load_dotenv()
+    directory_path = os.getenv('DIRECTORY_PATH')
+    directory_path = Path(directory_path)
     api_key = os.environ['NASA_API_KEY']
     if not api_key:
         raise ValueError("API ключ NASA не найден. Убедитесь, что переменная API_NASA установлена в .env файле.")
-    fetch_and_save_epic_images(api_key, args)
+    fetch_and_save_epic_images(api_key, args, directory_path)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,9 @@
 from posting_images_in_telegram import save_image
 from posting_images_in_telegram import requests
 import argparse
-from telegram_bot_space import prepare_directory
+import os
+from dotenv import load_dotenv
+from pathlib import Path
 
 def parse_and_validate_args():
     parser = argparse.ArgumentParser(
@@ -9,7 +11,7 @@ def parse_and_validate_args():
     )
     parser.add_argument(
         '--spacex_id',
-        default= 'latest',
+        default='latest',
         help='ID запуска SpaceX',
         type=str)
     args = parser.parse_args()
@@ -34,21 +36,24 @@ def fetch_spacex_data(url):
 
 def save_images(directory_path, image_urls):
     for image_number, image_url in enumerate(image_urls):
-        filename = directory_path / f'spacex_{image_number}.jpg'
+        filename = directory_path / f'spacex_{image_number}.jpg'  # Теперь directory_path - объект Path
         save_image(filename, image_url)
 
 
-def fetch_and_save_images(spacex_id):
+def fetch_and_save_images(spacex_id, directory_path):
     url = f'https://api.spacexdata.com/v5/launches/{spacex_id}'
     image_urls = fetch_spacex_data(url)
-    directory_path = prepare_directory('images')
     save_images(directory_path, image_urls)
+    print(url)
     print("Все изображения успешно сохранены!")
 
 
 def main():
+    load_dotenv()
+    directory_path = os.getenv('DIRECTORY_PATH')
+    directory_path = Path(directory_path)
     args = parse_and_validate_args()
-    fetch_and_save_images(args.spacex_id)
+    fetch_and_save_images(args.spacex_id, directory_path)
 
 
 if __name__ == '__main__':

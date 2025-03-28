@@ -32,7 +32,7 @@ Process finished with exit code 0
 #### При запуске с указанием id полета
 **Пример запуска:**
 ```bash
-* python fetch_spacex_images.py --id_spacex 5eb87d42ffd86e000604b384
+* python fetch_spacex_images.py --spacex_id 5eb87d42ffd86e000604b384
 ```
 **Пример вывода:**
 ```

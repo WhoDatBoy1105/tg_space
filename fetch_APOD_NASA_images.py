@@ -1,9 +1,10 @@
 from posting_images_in_telegram import save_image
-from posting_images_in_telegram import os
 from dotenv import load_dotenv
 from posting_images_in_telegram import requests
 from telegram_bot_space import prepare_directory
 import argparse
+import os
+from pathlib import Path
 
 
 def parse_arguments():
@@ -27,10 +28,9 @@ def save_nasa_image(directory_path, date, image_url):
     print(f"Изображение успешно сохранено: {filename}")
 
 
-def fetch_and_save_apod_image(api_key, date):
+def fetch_and_save_apod_image(api_key, date, directory_path):
     data = get_nasa_apod_data(api_key, date)
     image_url = data.get('url')
-    directory_path = prepare_directory('images')
     save_nasa_image(directory_path, date or "today", image_url)
 
 
@@ -38,9 +38,11 @@ def main():
     args = parse_arguments()
     load_dotenv()
     api_key = os.environ['NASA_API_KEY']
+    directory_path = os.getenv('DIRECTORY_PATH')
+    directory_path = Path(directory_path)
     if not api_key:
         raise ValueError("API ключ NASA не найден. Убедитесь, что переменная API_NASA установлена в .env файле.")
-    fetch_and_save_apod_image(api_key, args.date_apod)
+    fetch_and_save_apod_image(api_key, args.date_apod, directory_path)
 
 
 if __name__ == '__main__':
