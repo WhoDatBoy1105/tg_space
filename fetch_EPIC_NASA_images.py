@@ -1,7 +1,7 @@
 from posting_images_in_telegram import save_image
 from dotenv import load_dotenv
-from posting_images_in_telegram import os
 from posting_images_in_telegram import requests
+import os
 import argparse
 import datetime
 from telegram_bot_space import prepare_directory
@@ -50,16 +50,12 @@ def save_images(directory_path, payload, image_names, api_key, max_images):
         response = requests.get(link_image, params=request_params)
         response.raise_for_status()
         filename = directory_path / f'EPIC_{index}.png'
-        if max_images is None:
-            save_image(filename, response.url)
-        else:
-            max_images >= index
-            save_image(filename, response.url)
+        save_image(filename, response.url)
+        if max_images is not None and index >= max_images:
             break
 
 
-def fetch_and_save_epic_images(api_key):
-    args = parse_and_validate_args()
+def fetch_and_save_epic_images(api_key, args):
     data = get_nasa_epic_url(api_key)
     image_names, payload = create_image_by_date(data)
     directory_path = prepare_directory('images')
@@ -68,12 +64,12 @@ def fetch_and_save_epic_images(api_key):
 
 
 def main():
+    args = parse_and_validate_args()
     load_dotenv()
     api_key = os.environ['NASA_API_KEY']
     if not api_key:
         raise ValueError("API ключ NASA не найден. Убедитесь, что переменная API_NASA установлена в .env файле.")
-    fetch_and_save_epic_images(api_key)
-
+    fetch_and_save_epic_images(api_key, args)
 
 
 if __name__ == '__main__':
