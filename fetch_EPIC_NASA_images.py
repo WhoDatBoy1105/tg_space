@@ -28,7 +28,7 @@ def get_nasa_epic_url(api_key):
     return response.json()
 
 
-def create_image_by_date(data):
+def prepare_image_payload(data):
     image_names = [item['image'] for item in data]
     image_date = data[0]['date']
     date_obj = datetime.datetime.strptime(image_date, "%Y-%m-%d %H:%M:%S")
@@ -57,7 +57,7 @@ def save_images(directory_path, payload, image_names, api_key, max_images):
 
 def fetch_and_save_epic_images(api_key, args):
     data = get_nasa_epic_url(api_key)
-    image_names, payload = create_image_by_date(data)
+    image_names, payload = prepare_image_payload (data)
     directory_path = prepare_directory('images')
     save_images(directory_path, payload, image_names, api_key, args.max_images)
     print("Все изображения успешно сохранены!")
