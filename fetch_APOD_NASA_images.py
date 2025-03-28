@@ -1,10 +1,9 @@
-from posting_images_in_telegram import save_image
-from dotenv import load_dotenv
-from posting_images_in_telegram import requests
-from telegram_bot_space import prepare_directory
+import requests
 import argparse
 import os
 from pathlib import Path
+from posting_images_in_telegram import save_image
+from dotenv import load_dotenv
 
 
 def parse_arguments():

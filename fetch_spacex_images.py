@@ -1,9 +1,10 @@
-from posting_images_in_telegram import save_image
-from posting_images_in_telegram import requests
+import requests
 import argparse
 import os
-from dotenv import load_dotenv
 from pathlib import Path
+from posting_images_in_telegram import save_image
+from dotenv import load_dotenv
+
 
 def parse_and_validate_args():
     parser = argparse.ArgumentParser(
