@@ -51,7 +51,7 @@ def fetch_and_save_images(spacex_id, directory_path):
 
 def main():
     load_dotenv()
-    directory_path = os.getenv('DIRECTORY_PATH')
+    directory_path = os.getenv('DIRECTORY_PATH', './images')
     directory_path = Path(directory_path)
     args = parse_and_validate_args()
     fetch_and_save_images(args.spacex_id, directory_path)

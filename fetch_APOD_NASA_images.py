@@ -37,7 +37,7 @@ def main():
     args = parse_arguments()
     load_dotenv()
     api_key = os.environ['NASA_API_KEY']
-    directory_path = os.getenv('DIRECTORY_PATH')
+    directory_path = os.getenv('DIRECTORY_PATH', './images')
     directory_path = Path(directory_path)
     if not api_key:
         raise ValueError("API ключ NASA не найден. Убедитесь, что переменная API_NASA установлена в .env файле.")

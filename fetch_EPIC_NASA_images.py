@@ -64,7 +64,7 @@ def download_epic_images(api_key, max_count, directory):
 def main():
     args = parse_args()
     load_dotenv()
-    directory = Path(os.getenv('DIRECTORY_PATH'))
+    directory = Path(os.getenv('DIRECTORY_PATH', './images'))
     api_key = os.environ.get('NASA_API_KEY')
     if not api_key:
         raise ValueError("API ключ NASA не найден. Убедитесь, что переменная NASA_API_KEY установлена в .env файле.")
