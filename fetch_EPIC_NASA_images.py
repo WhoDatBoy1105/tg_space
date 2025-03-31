@@ -7,71 +7,68 @@ from posting_images_in_telegram import save_image
 from dotenv import load_dotenv
 
 
-def parse_and_validate_args():
+def parse_args():
     parser = argparse.ArgumentParser(
-        description='Программа сохраняет указанное количество картинок EPIC NASA на текущую дату'
+        description='Сохраняет указанное количество EPIC-изображений NASA за текущую дату.'
     )
-    parser.add_argument('--max_images', help='Количество картинок EPIC NASA на текущую дату', type=int)
+    parser.add_argument('--count', type=int, help='Количество изображений для сохранения')
     args = parser.parse_args()
 
-    if args.max_images is None:
-        print('Вы сохраняете все картинки EPIC NASA на текущую дату')
+    if args.count is None:
+        print('Будут сохранены все доступные EPIC-изображения NASA.')
     else:
-        print(f'Вы сохраняете {args.max_images} картинки EPIC NASA на текущую дату')
+        print(f'Будет сохранено {args.count} EPIC-изображений NASA.')
     return args
 
 
-def get_nasa_epic_url(api_key):
-    base_url = 'https://epic.gsfc.nasa.gov/api/natural'
-    params = {'api_key': api_key}
-    response = requests.get(base_url, params=params)
+def fetch_epic_data(api_key):
+    url = 'https://epic.gsfc.nasa.gov/api/natural'
+    response = requests.get(url, params={'api_key': api_key})
     response.raise_for_status()
     return response.json()
 
 
-def prepare_image_payload(data):
+def extract_image_info(data):
     image_names = [item['image'] for item in data]
-    image_date = data[0]['date']
-    date_obj = datetime.datetime.strptime(image_date, "%Y-%m-%d %H:%M:%S")
-    payload = {
+    date_obj = datetime.datetime.strptime(data[0]['date'], "%Y-%m-%d %H:%M:%S")
+    date_parts = {
         'year': date_obj.year,
         'month': f"{date_obj.month:02d}",
         'day': f"{date_obj.day:02d}"
     }
-    return image_names, payload
+    return image_names, date_parts
 
 
-def save_images(directory_path, payload, image_names, api_key, max_images):
-    request_params = {"api_key": api_key}
-    for index, image_name in enumerate(image_names, start=1):
-        link_image = (
+def save_images(directory, date_parts, image_names, api_key, max_count):
+    params = {"api_key": api_key}
+    for index, name in enumerate(image_names, start=1):
+        url = (
             f'https://api.nasa.gov/EPIC/archive/natural/'
-            f'{payload["year"]}/{payload["month"]}/{payload["day"]}/png/{image_name}.png'
+            f'{date_parts["year"]}/{date_parts["month"]}/{date_parts["day"]}/png/{name}.png'
         )
-        response = requests.get(link_image, params=request_params)
+        response = requests.get(url, params=params)
         response.raise_for_status()
-        filename = directory_path / f'EPIC_{index}.png'
-        save_image(filename, response.url)
-        if max_images is not None and index >= max_images:
+        file_path = directory / f'EPIC_{index}.png'
+        save_image(file_path, response.url)
+        if max_count and index >= max_count:
             break
 
 
-def fetch_and_save_epic_images(api_key, max_images, directory_path):
-    data = get_nasa_epic_url(api_key)
-    image_names, payload = prepare_image_payload (data)
-    save_images(directory_path, payload, image_names, api_key, max_images)
-    print("Все изображения успешно сохранены!")
+def download_epic_images(api_key, max_count, directory):
+    data = fetch_epic_data(api_key)
+    image_names, date_parts = extract_image_info(data)
+    save_images(directory, date_parts, image_names, api_key, max_count)
+    print("Изображения успешно сохранены!")
 
 
 def main():
-    args = parse_and_validate_args()
+    args = parse_args()
     load_dotenv()
-    directory_path = os.getenv('DIRECTORY_PATH')
-    directory_path = Path(directory_path)
-    api_key = os.environ['NASA_API_KEY']
+    directory = Path(os.getenv('DIRECTORY_PATH'))
+    api_key = os.environ.get('NASA_API_KEY')
     if not api_key:
-        raise ValueError("API ключ NASA не найден. Убедитесь, что переменная API_NASA установлена в .env файле.")
-    fetch_and_save_epic_images(api_key, args.max_images, directory_path)
+        raise ValueError("API ключ NASA не найден. Убедитесь, что переменная NASA_API_KEY установлена в .env файле.")
+    download_epic_images(api_key, args.count, directory)
 
 
 if __name__ == '__main__':
