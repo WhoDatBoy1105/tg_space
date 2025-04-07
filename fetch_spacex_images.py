@@ -25,9 +25,9 @@ def parse_and_validate_args():
     return args
 
 
-def fetch_spacex_data(url):
+def fetch_spacex_data(spacex_id):
+    url = f'https://api.spacexdata.com/v5/launches/{spacex_id}'
     response = requests.get(url)
-
     response.raise_for_status()
     data = response.json()
     image_urls = data['links']['flickr']['original']
@@ -37,26 +37,25 @@ def fetch_spacex_data(url):
 
 
 def save_images(directory_path, image_urls):
+    directory_path.mkdir(parents=True, exist_ok=True)
+
     for image_number, image_url in enumerate(image_urls):
         filename = directory_path / f'spacex_{image_number}.jpg'  # Теперь directory_path - объект Path
         save_image(filename, image_url)
 
 
 def fetch_and_save_images(spacex_id, directory_path):
-    url = f'https://api.spacexdata.com/v5/launches/{spacex_id}'
-    image_urls = fetch_spacex_data(url)
+    image_urls = fetch_spacex_data(spacex_id)
     save_images(directory_path, image_urls)
-    print(url)
-    print("Все изображения успешно сохранены!")
 
 
 def main():
     load_dotenv()
     directory_path = os.getenv('DIRECTORY_PATH', './images')
     directory_path = Path(directory_path)
+
     args = parse_and_validate_args()
     fetch_and_save_images(args.spacex_id, directory_path)
-
 
 
 if __name__ == '__main__':

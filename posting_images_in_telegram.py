@@ -14,7 +14,6 @@ def main():
     load_dotenv()
     print("Бот запущен")
     run_bot()
-    pass
 
 
 if __name__ == '__main__':
